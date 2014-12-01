@@ -1,0 +1,11 @@
+11/15/2014 12:25:16 PM | Test: Starting RAM unit tests
+11/15/2014 12:25:16 PM | Test: Read/Write Byte
+11/15/2014 12:25:16 PM | Test: Read/Write HalfWord
+11/15/2014 12:25:16 PM | Test: Read/Write Word
+11/15/2014 12:25:16 PM | Test: Set/Test Flag
+11/15/2014 12:25:16 PM | Test: All Ram Tests passed
+
+11/15/2014 12:25:16 PM | Test: Starting Simulator unit tests
+11/15/2014 12:25:16 PM | Test: Testing Hash of test1.exe
+11/15/2014 12:25:16 PM | ELF: Reading ELF file
+11/15/2014 12:25:16 PM | File not found: test1.exe

@@ -1,7 +1,15 @@
 GDBStub
 =======
 
-Attempt at implementing a gbd server for CpS 310 at BJU
+The finished product of a project at Bob Jones University.  A complete userguide is located in sim2Report
+
+
+
+Division of labor: during the GDB stub phase
+
+
+
+An implemention of a gbd server for CpS 310 at BJU
 
 Requirements
   
@@ -20,12 +28,7 @@ Requirements
 
 All requirements are believed to have been completed.  
 
-Important notes.  
+GDB stub phase completed back to solo projects.
 
-The Mov command will give you a address in Hex, a length of data in hex and then hex data to be loaded. 
+The simulator can intereact with a gdb client for debugging purposes.
 
-Command Line Options:
-"--load fileName.exe" loads a file into RAM
-"--debug" makes the program listen on port 8080 for a connection from a gdb stub
-"--mem XXX" where XXX is any positive number less than 1 GB sets the size of memory to XXX
-"--test" runs the test cases.

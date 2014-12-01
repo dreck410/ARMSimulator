@@ -37,11 +37,14 @@ namespace Simulator1
         string checkSum = "";
         uint step_number = 1;
         Dictionary<uint, uint> storedCommands = new Dictionary<uint,uint>();
-
+        public uint currentAddress { get; set; }
         Register[] reg = new Register[16];
         Memory RAM;
         CPU cpu;
-        Thread programThread;
+        Thread programThread, ConsoleIO;
+
+        public Queue<char> inputQueue { get; set; }
+
         private Object thisLock = new Object();
 
         private static Computer instance;
@@ -447,6 +450,10 @@ namespace Simulator1
                 readELF(Option.Instance.getFile(), Option.Instance.getMemSize());
             reg[13].WriteWord(0, 0x7000);
             step_number = 1;
+            N = false;
+            Z = false;
+            C = false;
+            F = false;
             Logger.Instance.writeLog("***** Reset *****\n");
         }
 
@@ -529,16 +536,21 @@ namespace Simulator1
          */
         private void go()
         {
+            ConsoleIO = new Thread(new ThreadStart(this.io));
+
+            ConsoleIO.Start();
+
+            while (!ConsoleIO.IsAlive) ;
+
          //mutex lock
             lock(thisLock){
                 do
                 {
                     //fetch, decode, execute commands here
                     Memory rawInstruction = cpu.fetch();
-                    Logger.Instance.writeLog(string.Format("CMD: #{0} = 0x{1}", this.step_number, Convert.ToString(rawInstruction.ReadWord(0), 16)));
-                    //break if we fetched a zero!
-                    //will change to a finish command like .exit
-             //       if (rawInstruction.ReadWord(0) != 0)
+                    currentAddress = reg[15].ReadWord(0);
+                    Logger.Instance.writeLog(string.Format("CMD: #{0} = 0x{1} at 0x{2}", this.step_number, Convert.ToString(rawInstruction.ReadWord(0), 16).PadLeft(8,'0'), Convert.ToString(currentAddress, 16).PadLeft(8,'0')));
+
                        if ((rawInstruction.ReadWord(0) & 0x0F000000) != 0x0F000000)
 
                         {
@@ -558,7 +570,7 @@ namespace Simulator1
                                 }
                                 else
                                 {
-                                    Logger.Instance.writeLog("CMD: Flags not updated");
+                                    //Logger.Instance.writeLog("CMD: Flags not updated");
                                 }
                                 Logger.Instance.writeTrace(this);
                                 Logger.Instance.writeLog("\n\n");
@@ -594,6 +606,7 @@ namespace Simulator1
                             endedStatus.statchar = 'W';
                             endedStatus.statval = "00";
                             compStatus = endedStatus;
+                            ConsoleIO.Abort();
                             this.reset();
                             return;
                         }
@@ -610,10 +623,31 @@ namespace Simulator1
                 Logger.Instance.writeLog("COMP: Stopped");
 
             }
-
+            ConsoleIO.Abort();
             //mutex unlock
 
         }
+
+        private void io()
+        {
+            ConsoleKeyInfo ConKeyInfo;
+            inputQueue = new Queue<char>();
+            while (true)
+            {
+                if (Console.KeyAvailable)
+                {
+                    ConKeyInfo = Console.ReadKey(true);
+                    Logger.Instance.writeLog(String.Format("IO: '{0}' Key Pressed", ConKeyInfo.Key));
+                    inputQueue.Enqueue(ConKeyInfo.KeyChar);
+                    if (ConKeyInfo.Key == ConsoleKey.Enter)
+                    {
+                        Console.WriteLine("");
+                    }
+                }
+            }
+        }
+
+
 
 
 
@@ -626,69 +660,6 @@ namespace Simulator1
 
 
 // end Actions
-
-        //this is used for non gdb access
-        // this method will probably be 
-        // refactored into the gdb handler class.
-        internal void command(string input)
-        {
-            Logger.Instance.writeLog("Comp: Command = " + input);
-
-            string output = "";
-            string[] command = input.Split(' ');
-            uint addr;
-            switch (command[0].ToLower())
-            {
-                case "run":
-                    //dostuff
-                    this.run();
-                    break;
-                case "step":
-                    this.step();
-                    break;
-                case "stop":
-                case "break":
-                    this.stop();
-                    break;
-                case "reset":
-                    this.reset();
-                    break;
-                case "load":
-                    this.load(command[1]);
-                    break;
-                case "breakpoint":
-                    addr = Convert.ToUInt16(command[1]);
-                    this.setBreakPoint(addr, 0);
-                    break;
-                case "rbkp":
-                    addr = Convert.ToUInt16(command[1]);
-                    this.removeBreakPoint(addr);
-                    break;
-                case "trace":
-                    Logger.Instance.toggleTrace();
-                    break;
-                case "display":
-                    //display the ram at an address and registers.
-                    addr = 0;
-                    int length = 10;
-                    try
-                    {
-                        addr = Convert.ToUInt32(command[1]);
-                        length = Convert.ToInt32(command[2]);
-                    }
-                    catch { }
-                    //log data
-                    Logger.Instance.writeLog(RAM.getAtAddress(addr, length));
-
-                    break;
-                default:
-                    output += "Invalid Command: valid commands are:\nrun \nstep \nstop/break \nreset \ndisplay [addr] [lines]";
-                    break;
-            }
-            Logger.Instance.writeLog(output);
-        }
-
-
 
 
     }

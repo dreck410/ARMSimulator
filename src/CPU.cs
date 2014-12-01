@@ -28,10 +28,10 @@ namespace Simulator1
         //CPU instantiation
 
         public CPU(ref Memory RAM, ref Register[] reg)
-            {
-                this.RAM = RAM;
-                this.reg = reg;
-            }
+        {
+            this.RAM = RAM;
+            this.reg = reg;
+        }
 
 
         //fetches data from RAM 
@@ -53,25 +53,25 @@ namespace Simulator1
             InstructionParser parser = new InstructionParser();
             Instruction inst = parser.parse(data);
 
-
-            
             return inst;
         }
 
         //executes the actual data by movine registers and stuff
         public bool[] execute(Instruction command, bool[] flagsNZCF)
         {
-            
-            if (command.checkCond(flagsNZCF))
+            if ((command.checkCond(flagsNZCF)))
             {
                 command.run(ref reg, ref RAM);
-                /*
                 if (command.S)
                 {
                     bool[] flags = { command.N, command.Z, command.C, command.F };
                     return flags;
                 }
-                 */
+
+            }
+            else
+            {
+                Logger.Instance.writeLog(string.Format("CMD: Condition Code Stopped Execution = {0}", command.condStr));
             }
 
             return null;

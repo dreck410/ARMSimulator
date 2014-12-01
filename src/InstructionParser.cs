@@ -18,26 +18,22 @@ namespace Simulator1
 
         public Instruction parse(Memory command)
         {
-            //initialize self based on command
-
-            //decode data
-            //Check special cases
-
-            //Get the conditional
 
             //get the type number
             this.type = (uint)((command.ReadByte(3) & 0x0c) >> 2);
             //Get immediate value or not.
-            //get the RN register
-            
-
 
             //switches based on type
             switch (this.type)
             {
                 case 0:
                     //data manipulation 00
-
+                    if ((0x012FFF10 & command.ReadWord(0)) == 0x012FFF10)
+                    {
+                        Logger.Instance.writeLog("CMD: BX Instruction");
+                        instruct = new Branch();
+                        break;
+                    }
                     instruct = new dataManipulation();
                     break;
                 case 1:
@@ -48,11 +44,6 @@ namespace Simulator1
 
                         instruct = new dataMovement();
                     }
-                    else
-                    {
-                        //unpredictable
-                    }
-
 
                     break;
                 case 2:
@@ -77,6 +68,8 @@ namespace Simulator1
                     if (command.TestFlag(0, 26) && command.TestFlag(0, 25))
                     {
                         //software interupt.
+                        Console.WriteLine("Quit");
+                        Environment.Exit(0);
                     }
                     break;
                 default:

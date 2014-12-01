@@ -13,7 +13,8 @@ namespace Simulator1
     class Memory
     {
         protected byte[] theArray;
-
+        protected byte Adr0x00100000 = 0;
+        protected byte Adr0x00100001 = 0;
         //program counter
         //Int32 pc;
 
@@ -42,7 +43,7 @@ namespace Simulator1
             return hasher.Hash(theArray);
         }
 
-
+        //gets the ram for a desired num of lines at an address
         public string getAtAddress(uint addr, int desiredLines = 8)
         {
             int numOfLines = 0;
@@ -150,6 +151,28 @@ namespace Simulator1
 
         public byte ReadByte(UInt32 addr)
         {
+            if (addr == 0x00100001)
+            {
+                if (Computer.Instance.inputQueue.Count != 0)
+                {
+                    Adr0x00100001 = (byte)Computer.Instance.inputQueue.Dequeue();
+                    Logger.Instance.writeLog(String.Format("IO: {0} From Queue", Adr0x00100001));
+                }
+                else
+                {
+                    Adr0x00100001 = 0x0;
+                }
+
+                return Adr0x00100001;
+            }
+            else
+            {
+                //used for polling
+                if (addr == 0x00100000)
+                {
+                    return Adr0x00100000;
+                }
+            }
             byte output = theArray[addr];
             return output;
         }//ReadByte
@@ -175,7 +198,16 @@ namespace Simulator1
 
         public void WriteByte(UInt32 addr, byte inpu)
         {
-            theArray[addr] = inpu;
+            if (addr == 0x00100000)
+            {
+               // Console.WriteLine("Got Some Input");
+                Logger.Instance.writeLog(String.Format("IO: Received {0}", (char)inpu));
+                Console.Write((char)inpu);
+            }
+            else
+            {
+                theArray[addr] = inpu;
+            }
         }//WriteByte
 
         public void CLEAR()

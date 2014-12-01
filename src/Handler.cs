@@ -296,16 +296,25 @@ namespace Simulator1
                     }
                     else if (cmd.StartsWith("qRcmd"))
                     {
-                        Console.WriteLine("Trace!!");
-                        if (Logger.Instance.toggleTrace())
+                        if (cmd.EndsWith("74"))
                         {
-                            this.Respond("+", ns);
+                            Console.WriteLine("Trace!! " + cmd);
+                            if (Logger.Instance.toggleTrace())
+                            {
+                                this.Respond("+", ns);
+                            }
+                            else
+                            {
+                                this.Respond("-", ns);
+                            }
                         }
                         else
                         {
                             this.Respond("-", ns);
+
                         }
-                    }
+                        }
+
 
                     break;
 
