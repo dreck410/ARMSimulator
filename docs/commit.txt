@@ -1,3 +1,19 @@
+Sat Nov 15 12:33:30 2014  Submitted. at12:20 PM on nov:15:14 in the year of our Lord And saviour Jesus Christ.  Done.
+Sat Nov 15 11:58:21 2014  finished IO C version is done. Next is code cleanup
+Thu Nov 13 12:26:05 2014  made the monitor t command only toggle trace instead of any monitor command
+Sat Nov 8 23:15:37 2014  got the branch.log working
+Sat Nov 8 22:51:03 2014  got the cmp test working.
+Thu Nov 6 20:59:33 2014  implemented bx,  made condition codes print, 2 hours
+Fri Oct 31 08:15:35 2014  submitted sim1
+Fri Oct 31 08:15:14 2014  bug fixes
+Thu Oct 30 16:54:49 2014  Getting ready for submission.
+Wed Oct 29 10:47:29 2014  quits if file not found
+Mon Oct 20 10:48:26 2014  multiply test
+Sun Oct 19 22:00:52 2014  here we go
+Sun Oct 19 21:57:07 2014  more tests
+Wed Oct 15 19:15:38 2014  here
+Wed Oct 15 19:08:57 2014  push from vs
+Wed Oct 15 19:06:17 2014  first solo commit
 Wed Oct 15 00:23:31 2014 \t B version???
 Mon Oct 13 08:47:45 2014 \t refactored my code to more object oriented.  Instructions now have a run(ref reg[], ref RAM) command that they inherit from the overall instruction class.
 Sun Oct 12 16:48:19 2014 \t unit tests
